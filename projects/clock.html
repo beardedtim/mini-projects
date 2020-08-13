@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #app {
+      width: 500px;
+      height: 500px;
+    }
+
+    svg {
+      font-family: sans-serif;
+    }
+  
+  </style>
+</head>
+<body>
+  <div id="app">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" id="clock-wrapper">
+      <circle cx="50" cy="50" r="45" fill="transparent" stroke="rgba(33, 33, 33, 0.5)" />
+      <text x="41.5" y="18.5" fill="rgba(33, 33, 33, 0.4)">12</text>
+      <text x="85" y="55" fill="rgba(33, 33, 33, 0.4)">3</text>
+      <text x="46" y="92.5" fill="rgba(33, 33, 33, 0.4)">6</text>
+      <text x="7.25" y="52.5" fill="rgba(33, 33, 33, 0.4)">9</text>
+      <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(33, 33, 33, 0.3)" id="second-hand" rotate="0" />
+      
+      <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(33, 33, 33, 0.8)" id="minute-hand" rotate="0" />
+      
+      <line x1="50" y1="50" x2="50" y2="25" stroke="rgba(0, 0, 255, 0.8)" id="hour-hand" rotate="0" />
+      <circle cx="50" cy="50" r="2" fill="black" />
+    </svg>
+  </div>
+</body>
+<script type="module">
+  const hands = {
+    second: document.getElementById('second-hand'),
+    minute: document.getElementById('minute-hand'),
+    hour: document.getElementById('hour-hand')
+  }
+
+  const rotate_by = (el, diff) => {
+    const old_rotation = Number(el.getAttribute('rotate'))
+    const new_rotation = (old_rotation + diff)
+
+    el.setAttribute('transform', `rotate(${new_rotation}, 50, 50)`);
+    el.setAttribute('rotate', new_rotation)
+  }
+
+  const rotate_minute = () => {
+    rotate_by(hands.minute, 0.1)
+  }
+
+  const rotate_hour = () => {
+    rotate_by(hands.hour, 0.0083333334)
+  }
+
+  const rotate_second = () => {
+    rotate_by(hands.second, 6)
+  }
+
+  const set_initial_time = () => {
+    const time = new Date()
+    const secs = time.getSeconds() * 6
+    const mins = time.getMinutes() * 6 + (time.getSeconds() * 0.1)
+    const hrs = 30 * ((time.getHours() % 12) + time.getMinutes() / 60);
+
+    hands.hour.setAttribute('transform', `rotate(${hrs}, 50, 50)`)
+    hands.hour.setAttribute('rotate', hrs)
+
+    hands.minute.setAttribute('transform', `rotate(${mins}, 50, 50)`)
+    hands.minute.setAttribute('rotate', mins)
+
+    hands.second.setAttribute('transform', `rotate(${secs}, 50, 50)`)
+    hands.second.setAttribute('rotate', secs)
+  }
+
+  set_initial_time()
+
+  setInterval(() => {
+    rotate_minute()
+    rotate_hour()
+    rotate_second()
+  }, 1000)
+</script>
+</html>
